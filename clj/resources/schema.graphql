@@ -1,0 +1,82 @@
+schema {
+    query: Query
+}
+
+scalar Date
+
+type Image {
+  href: String!
+  title: String!
+  width: Float
+  height: Float
+}
+
+type Viewer {
+  name: String
+  avatar: Image
+  notifications: [Notification!]
+}
+
+enum NotificationKind {
+  INFO
+  ERROR
+  WARNING
+}
+
+type Notification {
+  title: String!
+  createdAt: Date!
+  kind: NotificationKind
+
+}
+
+type Contract {
+  _uid: ID
+  originalId: String
+  amount: Float
+  start: Date
+  end: Date
+  status: ContractStatus
+}
+
+enum ContractStatus {
+  ACTIVE
+  INACTIVE
+}
+
+type PaginatedContracts {
+  totalCount: Int!
+  nodes: [Contract!]
+}
+
+type Customer {
+  _uid: ID
+  name: String!
+  status: CustomerStatus
+}
+
+enum CustomerStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum OrderByDirection {
+  ASC
+  DESC
+}
+
+input OrderBy {
+  field: String!
+  direction: OrderByDirection
+}
+
+enum ContractOuter { ALL, PROFILE }
+
+input ContractFilters {
+  outer: ContractOuter
+}
+
+type Query {
+  viewer: Viewer
+  contracts(filter: ContractFilters, limit: Int, page: Int, orderBy:[OrderBy!]): PaginatedContracts
+}
